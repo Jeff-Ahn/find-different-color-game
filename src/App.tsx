@@ -1,6 +1,5 @@
 // TODO
 // [] maximum stage 만들기
-// [] 렌더링 최적화 - React.memo, useMemo, useCallback 활용하기
 import Board from './components/Board';
 import { useTimer, useStage, useScore, useBlockColors } from './hooks';
 import {
@@ -11,7 +10,7 @@ import {
   makeRGBColor,
 } from './utils/lib';
 import { MAX_TIME_LIMITED } from './utils/constants';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import Header from './components/Header/Header';
 
 const DEFAULT_BLOCK_COLORS = generateRandomColor();
@@ -73,17 +72,17 @@ function App() {
     onResetStage();
   };
 
-  const onAnswerBlockClick = () => {
+  const onAnswerBlockClick = useCallback(() => {
     const acquiredScore = calcAcquiredScore(stage, leftTime);
     onAddScore(acquiredScore);
     changeBlockColors(generateRandomColor());
     onNextStage();
     onResetTimer();
-  };
+  }, [stage]);
 
-  const onWrongBlockClick = () => {
+  const onWrongBlockClick = useCallback(() => {
     onSubtractTime(3);
-  };
+  }, [stage]);
 
   return (
     <div className='App'>

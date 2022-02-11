@@ -1,3 +1,4 @@
+import React from 'react';
 import { css } from '@emotion/react';
 import { BOARD_SIZE } from '../../utils/constants';
 
@@ -49,4 +50,4 @@ const blockStyle = (color: string, columns: number) => css`
   height: ${BOARD_SIZE / columns - offset}px;
 `;
 
-export default Board;
+export default React.memo(Board);
