@@ -1,6 +1,6 @@
-// TODO
-// [] maximum stage 만들기
+import { useCallback, useEffect, useMemo } from 'react';
 import Board from './components/Board';
+import Header from './components/Header/Header';
 import { useTimer, useStage, useScore, useBlockColors } from './hooks';
 import {
   calcAcquiredScore,
@@ -9,9 +9,7 @@ import {
   getNumberOfBlocks,
   makeRGBColor,
 } from './utils/lib';
-import { MAX_TIME_LIMITED } from './utils/constants';
-import { useCallback, useEffect, useMemo } from 'react';
-import Header from './components/Header/Header';
+import { MAXIMUM_STAGE, MAX_TIME_LIMITED } from './utils/constants';
 
 const DEFAULT_BLOCK_COLORS = generateRandomColor();
 
@@ -55,6 +53,7 @@ function App() {
 
   useEffect(() => {
     checkIsGameOver();
+    checkIsClearStage();
   }, [leftTime]);
 
   const checkIsGameOver = () => {
@@ -62,6 +61,19 @@ function App() {
       onClearTimer();
       alert(`GAME OVER!\n스테이지: ${stage}, 점수: ${score}`);
       onGameRestart();
+    }
+  };
+
+  const checkIsClearStage = () => {
+    if (stage !== MAXIMUM_STAGE) return;
+    if (
+      confirm(
+        `CONGRATULATIONS! YOU CLEARED ALL STAGES!\n최종 점수: ${score}\n다시 게임을 플레이 하시겠습니까?`
+      )
+    ) {
+      onGameRestart();
+    } else {
+      onClearTimer();
     }
   };
 
