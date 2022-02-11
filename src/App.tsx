@@ -1,5 +1,100 @@
+// TODO
+// [] maximum stage 만들기
+// [] 렌더링 최적화 - React.memo, useMemo, useCallback 활용하기
+import Board from './components/Board';
+import { useTimer, useStage, useScore, useBlockColors } from './hooks';
+import {
+  calcAcquiredScore,
+  generateRandomColor,
+  getLittleDifferentColorByStage,
+  getNumberOfBlocks,
+  makeRGBColor,
+} from './utils/lib';
+import { MAX_TIME_LIMITED } from './utils/constants';
+import { useEffect, useMemo, useState } from 'react';
+import Header from './components/Header/Header';
+
+const DEFAULT_BLOCK_COLORS = generateRandomColor();
+
 function App() {
-  return <div className='App'>app</div>;
+  const { score, onAddScore, onResetScore } = useScore();
+  const { stage, onNextStage, onResetStage } = useStage();
+  const { leftTime, onStartTimer, onClearTimer, onResetTimer, onSubtractTime } =
+    useTimer(MAX_TIME_LIMITED);
+  const { blockColors: basicBlockColors, changeBlockColors } =
+    useBlockColors(DEFAULT_BLOCK_COLORS);
+  const numberOfBlocks = useMemo(() => getNumberOfBlocks(stage), [stage]);
+  const answerBlockColors = useMemo(
+    () => getLittleDifferentColorByStage(basicBlockColors, stage),
+    [basicBlockColors, stage]
+  );
+  const blocks = useMemo(
+    () => new Array(numberOfBlocks).fill(null),
+    [stage, basicBlockColors]
+  );
+  const randomBlockIndex = useMemo(
+    () => Math.floor(Math.random() * numberOfBlocks),
+    [stage, basicBlockColors]
+  );
+  blocks[randomBlockIndex] = {
+    color: makeRGBColor(answerBlockColors),
+    isAnswer: true,
+  };
+  const newBlocks = useMemo(
+    () =>
+      blocks.map(
+        (v) => v || { color: makeRGBColor(basicBlockColors), isAnswer: false }
+      ),
+    [stage, basicBlockColors]
+  );
+
+  useEffect(() => {
+    onStartTimer();
+    onResetScore();
+    return () => onClearTimer();
+  }, []);
+
+  useEffect(() => {
+    checkIsGameOver();
+  }, [leftTime]);
+
+  const checkIsGameOver = () => {
+    if (leftTime <= 0) {
+      onClearTimer();
+      alert(`GAME OVER!\n스테이지: ${stage}, 점수: ${score}`);
+      onGameRestart();
+    }
+  };
+
+  const onGameRestart = () => {
+    changeBlockColors(generateRandomColor());
+    onResetTimer();
+    onResetScore();
+    onResetStage();
+  };
+
+  const onAnswerBlockClick = () => {
+    const acquiredScore = calcAcquiredScore(stage, leftTime);
+    onAddScore(acquiredScore);
+    changeBlockColors(generateRandomColor());
+    onNextStage();
+    onResetTimer();
+  };
+
+  const onWrongBlockClick = () => {
+    onSubtractTime(3);
+  };
+
+  return (
+    <div className='App'>
+      <Header stage={stage} leftTime={leftTime} score={score} />
+      <Board
+        blocks={newBlocks}
+        onAnswerBlockClick={onAnswerBlockClick}
+        onWrongBlockClick={onWrongBlockClick}
+      />
+    </div>
+  );
 }
 
 export default App;
