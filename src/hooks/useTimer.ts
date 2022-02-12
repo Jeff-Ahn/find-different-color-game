@@ -19,7 +19,6 @@ const useTimer = (INITIAL_TIME: number) => {
   const onClearTimer = useCallback(() => {
     if (timerRef.current === null) return;
     clearInterval(timerRef.current);
-    console.log('clear한 후 current:', timerRef.current);
     timerRef.current = null;
   }, []);
 
