@@ -4,7 +4,7 @@
 
 [넘블 챌린지](https://www.numble.it/45cee9d3-49ad-4f67-9d2a-14607c2eeba7?t=1643881173)를 통해 **다른 그림 찾기 게임**을 구현해보았습니다<br>
 여러 블록 요소들 중에서 색깔이 다른 블록을 찾아 클릭하면 점수를 얻는 간단한 게임입니다.<br><br>
-[개발 후기](/*블로그링크삽입*/)
+### [개발 후기](https://velog.io/@ahu8867/Numble-Challenge-%EB%8B%A4%EB%A5%B8-%EA%B7%B8%EB%A6%BC-%EC%B0%BE%EA%B8%B0-%EA%B2%8C%EC%9E%84-%EA%B5%AC%ED%98%84)
 
 ## 결과물
 
